@@ -27,3 +27,4 @@ class UserSerializer(serializers.ModelSerializer):
     # 유저의 팔로잉 수
     def get_following_count(self, obj):
         return obj.followings.count()
+    
