@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'posts',
     'comments',
     'achievements',
+    'user_achievements',
     'rest_framework_simplejwt',
 ]
 
