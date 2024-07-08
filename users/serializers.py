@@ -27,4 +27,8 @@ class UserSerializer(serializers.ModelSerializer):
     # 유저의 팔로잉 수
     def get_following_count(self, obj):
         return obj.followings.count()
-    
+    def create(self, validated_data):
+        user = User(**validated_data)
+        user.set_password(validated_data['password'])  # 비밀번호 해싱
+        user.save()
+        return user
