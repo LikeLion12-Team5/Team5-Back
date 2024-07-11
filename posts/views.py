@@ -94,3 +94,8 @@ class MyColorsNumAPIView(APIView):
         except KeyError:
             return Response({"message": "NOT FOUND"}, status=status.HTTP_404_NOT_FOUND)
         
+
+# 자신의 색깔별 게시글 수 검색
+class ColorsNumAPIView(ListAPIView):
+    def get_queryset(self):
+        return Post.objects.filter(like_users=self.request.user)
