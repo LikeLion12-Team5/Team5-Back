@@ -17,6 +17,9 @@ from user_achievements.models import UserAchievement
 from user_achievements.serializers import UserAchievementSerializer
 from django.db.models import Count, Sum
 from posts.views import MostLikedPostsView
+from datetime import timedelta
+from django.utils import timezone
+from datetime import datetime, date
 
 class AchievementListAPIView(ListAPIView):
     serializer_class = UserAchievementSerializer
@@ -101,8 +104,13 @@ class AchievementListAPIView(ListAPIView):
             if color_count == len(Post.COLOR_CHOICES):
                 return True
         elif achievement.title == '영감을 주는 목소리':
-            top_liked_user = MostLikedPostsView().user
-            if top_liked_user == user:
+            today = date.today()
+            start_date = datetime.now() - timedelta(days=today.weekday() + 7)
+            end_date = start_date + timedelta(days=6)
+            top_post = Post.objects.filter(created_at__gte=start_date, created_at__lte=end_date)\
+                                .annotate(num_likes=Count('like_users'))\
+                                .order_by('-num_likes').first()
+            if top_post and top_post.user == self.request.user:
                 return True
 
 # 회원가입, 유저 전체 확인
