@@ -96,8 +96,8 @@ CORS_ALLOWED_ORIGINS = [
 
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(timedelta=30),  # 액세스 토큰의 수명을 30일로 설정
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # 리프레시 토큰의 수명을 1년으로 설정
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=10),  # 액세스 토큰의 수명을 30분으로 설정
+    'REFRESH_TOKEN_LIFETIME': timedelta(seconds=30),  # 리프레시 토큰의 수명을 하루로 설정
 }
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

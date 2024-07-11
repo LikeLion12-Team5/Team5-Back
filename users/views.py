@@ -5,7 +5,7 @@ from posts.models import Post
 from users.serializers import UserSerializer
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -205,11 +205,27 @@ class LoginAPIView(APIView):
         return Response(
             status=status.HTTP_200_OK,
             data={
-                'token': str(token.access_token),
+                'refresh_token': str(token),
+                'access_token': str(token.access_token),
                 'user': serializer.data,
             }
         )
+#리프레시 토큰에 따른 액세스 토큰 재발행
+class RefreshAPIView(APIView):
+    permission_classes = [AllowAny]
 
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+        if refresh_token is None:
+            return Response({'error': '리프레시 토큰이 필요합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            refresh = RefreshToken(refresh_token)
+        except TokenError:
+            return Response({'error': '유효하지 않은 리프레시 토큰입니다.'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        new_access_token = str(refresh.access_token)
+        return Response({'access': new_access_token}, status=status.HTTP_200_OK)
 #팔로우 
 class FollowAPIView(APIView):
     permission_classes = [IsAuthenticated]
