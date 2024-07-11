@@ -15,6 +15,7 @@ from django.shortcuts import get_object_or_404
 from achievements.models import Achievement
 from user_achievements.models import UserAchievement
 from user_achievements.serializers import UserAchievementSerializer
+from django.db.models import Count
 
 class AchievementListAPIView(ListAPIView):
     serializer_class = UserAchievementSerializer
@@ -56,6 +57,22 @@ class AchievementListAPIView(ListAPIView):
             return True
         elif achievement.title == '창작의 반짝임' and Post.objects.filter(user=user).count() >= 8:
             return True
+        elif achievement.title == '공감의 새싹' and Post.objects.filter(like_users=user): # 공감 수 10개
+            total_likes = Post.objects.filter(user=user).aggregate(total_likes=Count('like_users'))['total_likes']
+            if total_likes >= 10:
+                return True
+        elif achievement.title == '공감의 행운': # 공감 수 50개
+            total_likes = Post.objects.filter(user=user).aggregate(total_likes=Count('like_users'))['total_likes']
+            if total_likes >= 50:
+                return True
+        elif achievement.title == '공감의 만개': # 공감 수 100개
+            total_likes = Post.objects.filter(user=user).aggregate(total_likes=Count('like_users'))['total_likes']
+            if total_likes >= 100:
+                return True
+        elif achievement.title == '창작의 팔레트': # 주간지 모든 색상 1회 이상 발행
+            color_count = Post.objects.filter(user=user).values('color').distinct().count()
+            if color_count == len(Post.COLOR_CHOICES):
+                return True
 
 # 회원가입, 유저 전체 확인
 class UserListCreateAPIView(ListCreateAPIView):
