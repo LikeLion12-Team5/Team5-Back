@@ -10,4 +10,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('like/<int:post_id>/', views.post_like_api_view, name='post-like'),
     path('my/', views.MyPostAPIView.as_view(), name='my-post'),
+    path('mycolors/', views.MyColorsNumAPIView.as_view(), name='my-colors'),
 ]

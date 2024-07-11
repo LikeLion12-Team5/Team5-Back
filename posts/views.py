@@ -5,10 +5,11 @@ from posts.models import Post
 from posts.serializers import PostSerializer
 from rest_framework import status, viewsets, filters
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView
+from django.db.models import Count
+from rest_framework.views import APIView
 from posts.permissions import IsOwner, OnlyRead
 from rest_framework.permissions import IsAuthenticated
-import logging
 
 
 # 검색(전체), 검색(post_id), 검색(color) 게시, 수정, 삭제
@@ -58,3 +59,28 @@ class MyPostAPIView(ListAPIView):
 
     def get_queryset(self):
         return Post.objects.filter(user=self.request.user)
+
+
+# 자신의 색깔별 게시글 수 검색
+class MyColorsNumAPIView(APIView):
+    def get(self, request):
+        try:
+            # 현재 로그인한 사용자의 게시물 필터링
+            post_set = Post.objects.filter(user=request.user)
+            
+            # 각 색상별 게시물 수를 주석으로 추가
+            color_counts = post_set.values('color').annotate(count=Count('color'))
+
+            # 모든 색상 선택지를 0으로 설정하여 색상 맵 초기화
+            color_map = {color_choice[0]: 0 for color_choice in Post.COLOR_CHOICES}
+
+            # 쿼리에서 실제 카운트로 color_map 업데이트
+            for item in color_counts:
+                color_map[item['color']] = item['count']
+
+            # 색상 코드를 한글 이름으로 변환
+            post_list = {color_choice[0]: color_map[color_choice[0]] for color_choice in Post.COLOR_CHOICES}
+
+            return Response({"result": post_list}, status=status.HTTP_200_OK)
+        except KeyError:
+            return Response({"message": "NOT FOUND"}, status=status.HTTP_404_NOT_FOUND)
