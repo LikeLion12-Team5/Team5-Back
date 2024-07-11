@@ -2,6 +2,10 @@ from django.db import models
 from users.models import User
 from config import settings
 
+def post_directory_path(instance, filename):
+    # 파일을 'user_<id>/<filename>' 경로에 업로드합니다.
+    return f'user_{instance.id}/post/{filename}'
+
 class Post(models.Model):
     COLOR_CHOICES = (
         ('빨강', '빨강(Red)'),
@@ -15,7 +19,7 @@ class Post(models.Model):
     title = models.CharField(max_length=50, null=True)
     content = models.TextField(max_length=1000, null=True, blank=True)
     comment = models.TextField(max_length=100, null=True)
-    image = models.ImageField(upload_to='posts', null=True)
+    image = models.ImageField(upload_to=post_directory_path, blank=True, null=True)
     color = models.CharField(max_length=2, choices=COLOR_CHOICES, default="")
 
     date = models.DateField(null=True) # 날짜 기입
