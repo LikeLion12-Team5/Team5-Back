@@ -9,3 +9,7 @@ class UserAchievementSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAchievement
         fields = "__all__"
+
+    def get_progress(self, obj):
+        view = self.context['view']
+        return view.get_achievement_progress(obj.user, obj.achievement)

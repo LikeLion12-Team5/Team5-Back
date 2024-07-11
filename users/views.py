@@ -229,14 +229,31 @@ class FollowAPIView(APIView):
         user_to_follow = get_object_or_404(User, id=id)
         if user == user_to_follow:
             return Response({"본인입니다."}, status=status.HTTP_400_BAD_REQUEST)
-        
+          
         if user.followings.filter(id=id).exists():
             user.followings.remove(user_to_follow)
             return Response({'팔로우 취소했습니다'}, status=status.HTTP_200_OK)
         else:
             user.followings.add(user_to_follow)
             return Response({'팔로우 했습니다.'}, status=status.HTTP_200_OK)
+
+#상대가 나를 팔로우 했을 때, 취소하는 기능
+class RemoveFollowerAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+        user = request.user
+        user_to_remove = get_object_or_404(User, id=id)
         
+        if user == user_to_remove:
+            return Response({"error": "본인입니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if user.followers.filter(id=id).exists():
+            user_to_remove.followings.remove(user)
+            return Response({'message': '상대방의 팔로우를 취소했습니다'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': '상대방이 팔로우하고 있지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
 #팔로우 리스트 확인
 class UserFollowersAPIView(ListAPIView):
     serializer_class = UserSerializer
