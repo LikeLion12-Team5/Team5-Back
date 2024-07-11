@@ -205,8 +205,7 @@ class LoginAPIView(APIView):
         return Response(
             status=status.HTTP_200_OK,
             data={
-                'refresh_token': str(token),
-                'access_token': str(token.access_token),
+                'token': str(token.access_token),
                 'user': serializer.data,
             }
         )
@@ -225,7 +224,7 @@ class RefreshAPIView(APIView):
             return Response({'error': '유효하지 않은 리프레시 토큰입니다.'}, status=status.HTTP_401_UNAUTHORIZED)
         
         new_access_token = str(refresh.access_token)
-        return Response({'access': new_access_token}, status=status.HTTP_200_OK)
+        return Response({'token': new_access_token}, status=status.HTTP_200_OK)
 #팔로우 
 class FollowAPIView(APIView):
     permission_classes = [IsAuthenticated]
