@@ -91,11 +91,12 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000/",
     "http://127.0.0.1:8000/",
+    "http://3.39.171.235:8000/",
 ]
 
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # 액세스 토큰의 수명을 30일로 설정
+    'ACCESS_TOKEN_LIFETIME': timedelta(timedelta=30),  # 액세스 토큰의 수명을 30일로 설정
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # 리프레시 토큰의 수명을 1년으로 설정
 }
 REST_FRAMEWORK = {
