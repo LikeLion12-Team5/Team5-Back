@@ -10,8 +10,86 @@ from django.db.models import Count
 from rest_framework.views import APIView
 from posts.permissions import IsOwner, OnlyRead
 from rest_framework.permissions import IsAuthenticated
+from datetime import timedelta
+from django.utils import timezone
+from datetime import datetime, date
 
+# 지난 주에 가장 공감을 많이 받은 게시글 조회
+class MostLikedPostsView(ListAPIView):
+    model = Post
 
+    def get_queryset(self):
+        # 좋아요 수가 많은 순서로 게시물을 정렬
+        # posts = Post.objects.annotate(num_likes=Count('like_users')).order_by('-num_likes')[:1]
+        today = date.today()
+        start_date = datetime.now() - timedelta(days=today.weekday() + 7)
+        end_date = start_date + timedelta(days=6)
+        posts = Post.objects.filter(created_at__gte=start_date, created_at__lte=end_date)\
+                            .annotate(num_likes=Count('like_users'))\
+                            .order_by('-num_likes')[:1]
+        return posts
+
+class MostFrequentColorView(APIView):
+    
+    def get(self, request, format=None):
+
+        today = date.today()
+        start_date = datetime.now() - timedelta(days=today.weekday() + 7)
+        end_date = start_date + timedelta(days=6)
+
+        queryset = Post.objects.filter(created_at__gte=start_date, created_at__lte=end_date)
+        red_post = 0
+        orange_post = 0
+        yellow_post = 0
+        green_post = 0
+        blue_post = 0
+        purple_post = 0
+
+        for post in queryset:
+            if post.color == '빨강':
+                red_post += 1
+            elif post.color == '주황':
+                orange_post += 1
+            elif post.color == '노랑':
+                yellow_post += 1
+            elif post.color == '초록':
+                green_post += 1
+            elif post.color == '파랑':
+                blue_post += 1
+            elif post.color == '보라':
+                purple_post += 1
+
+        # 각 색상의 개수를 비교하여 가장 많이 선택된 색상과 개수를 찾습니다.
+        most_color = ''
+        color_num = 0
+
+        if red_post > color_num:
+            most_color = '빨강'
+            color_num = red_post
+        if orange_post > color_num:
+            most_color = '주황'
+            color_num = orange_post
+        if yellow_post > color_num:
+            most_color = '노랑'
+            color_num = yellow_post
+        if green_post > color_num:
+            most_color = '초록'
+            color_num = green_post
+        if blue_post > color_num:
+            most_color = '파랑'
+            color_num = blue_post
+        if purple_post > color_num:
+            most_color = '보라'
+            color_num = purple_post
+
+        serialized_data = {
+            '가장 많이 선택한 색상': most_color, 
+            '해당 색상의 주간 포스트 수': color_num,
+        }
+
+        return Response(serialized_data)
+
+    
 # 검색(전체), 검색(post_id), 검색(color) 게시, 수정, 삭제
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()

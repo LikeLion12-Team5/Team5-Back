@@ -16,26 +16,7 @@ from achievements.models import Achievement
 from user_achievements.models import UserAchievement
 from user_achievements.serializers import UserAchievementSerializer
 from django.db.models import Count, Sum
-from datetime import timedelta
-from django.utils import timezone
-
-# 지난 주동안 가장 많은 공감을 받은 사용자 구하기
-def get_top_liked_user_last_week():
-    # 현재 시간
-    now = timezone.now()
-    
-    # 지난 주의 시작일과 종료일 계산
-    start_of_last_week = now - timedelta(days=now.weekday() + 7)
-    end_of_last_week = start_of_last_week + timedelta(days=6)
-    
-    # 지난 주 동안 사용자가 받은 공감 수 계산
-    top_liked_user = User.objects.filter(
-        posts__created_at__range=[start_of_last_week, end_of_last_week]
-    ).annotate(
-        total_likes=Sum('posts__like_users')
-    ).order_by('-total_likes').first()
-    
-    return top_liked_user
+from posts.views import MostLikedPostsView
 
 class AchievementListAPIView(ListAPIView):
     serializer_class = UserAchievementSerializer
@@ -120,7 +101,7 @@ class AchievementListAPIView(ListAPIView):
             if color_count == len(Post.COLOR_CHOICES):
                 return True
         elif achievement.title == '영감을 주는 목소리':
-            top_liked_user = get_top_liked_user_last_week()
+            top_liked_user = MostLikedPostsView().user
             if top_liked_user == user:
                 return True
 

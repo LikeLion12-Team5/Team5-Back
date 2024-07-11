@@ -19,4 +19,3 @@ class PostSerializer(serializers.ModelSerializer):
     # 가능하다면 likes_num도 추가해보기
     def get_likes_num(self, obj):
         return obj.like_users.count()
-    
