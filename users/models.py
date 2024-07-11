@@ -10,9 +10,6 @@ class User(AbstractUser):
     nickname = models.CharField(max_length=50, unique=True, error_messages={
             "unique": ("해당 닉네임이 이미 존재합니다."),
         },)
-    email = models.EmailField(max_length = 254, unique=True, error_messages={
-            "unique": ("해당 이메일이 이미 존재합니다."),
-        },)
     GENDER_CHOICES = (
         ('남자', '남자(Man)'),
         ('여자', '여자(Woman)'),
