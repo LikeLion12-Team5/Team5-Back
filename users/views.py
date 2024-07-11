@@ -38,6 +38,32 @@ class AchievementListAPIView(ListAPIView):
                 user_achievement.unlocked = True
                 user_achievement.save()
         return achievements
+    
+    def get_achievement_progress(self, user, achievement):
+        if achievement.title == '탐험의 시작':
+            return user.followings.count()
+        elif achievement.title == '연결의 열쇠':
+            return user.followers.count()
+        elif achievement.title == '인기의 중심':
+            return user.followers.count()
+        elif achievement.title == '축하의 순간':
+            return user.followers.count()
+        elif achievement.title == '창작의 첫 걸음':
+            return Post.objects.filter(user=user).count()
+        elif achievement.title == '창작의 열정':
+            return Post.objects.filter(user=user).count()
+        elif achievement.title == '창작의 반짝임':
+            return Post.objects.filter(user=user).count()
+        elif achievement.title == '공감의 새싹':
+            return Post.objects.filter(user=user).aggregate(total_likes=Count('like_users'))['total_likes']
+        elif achievement.title == '공감의 행운':
+            return Post.objects.filter(user=user).aggregate(total_likes=Count('like_users'))['total_likes']
+        elif achievement.title == '공감의 만개':
+            return Post.objects.filter(user=user).aggregate(total_likes=Count('like_users'))['total_likes']
+        elif achievement.title == '창작의 팔레트':
+            return Post.objects.filter(user=user).values('color').distinct().count()
+        return 0
+
     def check_achievement_unlocked(self, user, achievement, unlocked):
         if unlocked:
             return True
