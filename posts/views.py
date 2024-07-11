@@ -31,10 +31,10 @@ def post_like_api_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if post.like_users.filter(id=request.user.id).exists():
         post.like_users.remove(request.user)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"공감을 취소했습니다."}, status=status.HTTP_204_NO_CONTENT)
     else:
         post.like_users.add(request.user)
-        return Response(status=status.HTTP_201_CREATED)
+        return Response({"공감을 눌렀습니다."}, status=status.HTTP_201_CREATED)
     
 # 좋아요
 @api_view(['POST'])

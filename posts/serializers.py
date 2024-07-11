@@ -5,7 +5,7 @@ from users.serializers import UserSerializer
 
 class PostSerializer(serializers.ModelSerializer):
     comments_num = serializers.SerializerMethodField()
-    likes_num = serializers.SerializerMethodField()
+    likes_num = serializers.SerializerMethodField(required=False)
     user = UserSerializer(required=False)
 
     class Meta:
