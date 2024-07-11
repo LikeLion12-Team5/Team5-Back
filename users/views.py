@@ -56,7 +56,6 @@ class AchievementListAPIView(ListAPIView):
             return True
         elif achievement.title == '창작의 반짝임' and Post.objects.filter(user=user).count() >= 8:
             return True
-         
 
 # 회원가입, 유저 전체 확인
 class UserListCreateAPIView(ListCreateAPIView):
@@ -69,6 +68,7 @@ class UserListCreateAPIView(ListCreateAPIView):
         if len(response.data) == 0:
             return Response({"해당 유저가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
         return response
+    
 # 특정 유저 찾기 - user_id를 통해서
 class UserDetailAPIView(RetrieveAPIView):
     queryset = User.objects.all()
@@ -130,6 +130,7 @@ class ProfileAPIView(RetrieveUpdateDestroyAPIView):
             instance.profile_image = None
 
         serializer.save()
+
 # 로그인
 class LoginAPIView(APIView):
     permission_classes = [AllowAny]
@@ -152,6 +153,7 @@ class LoginAPIView(APIView):
                 'user': serializer.data,
             }
         )
+
 #팔로우 
 class FollowAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -167,6 +169,7 @@ class FollowAPIView(APIView):
         else:
             user.followings.add(user_to_follow)
             return Response({'팔로우 했습니다.'}, status=status.HTTP_200_OK)
+        
 #팔로우 리스트 확인
 class UserFollowersAPIView(ListAPIView):
     serializer_class = UserSerializer
@@ -196,3 +199,4 @@ class UserFollowingAPIView(ListAPIView):
             return Response({'팔로잉중인 유저가 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
