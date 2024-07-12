@@ -97,6 +97,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
     "http://localhost:8000/",
     "http://127.0.0.1:8000/",
+    "http://localhost:5500/",
     "http://127.0.0.1:5500/",
 )
 
@@ -150,8 +151,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'color-post',
+        'USER':'colorful_lion5',
+        'PASSWORD':'color0712!',
+        'HOST':'color-post.cl8sss2aeglb.ap-northeast-2.rds.amazonaws.com',
+        'PORT':'3306',
+        'OPTION': {
+            'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"'
+        }
     }
 }
 
