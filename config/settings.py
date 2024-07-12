@@ -146,7 +146,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'like',
+        'NAME': 'likecolor',
         'USER':'admin',
         'PASSWORD':'lion1234',
         'HOST':'database-2.cl8sss2aeglb.ap-northeast-2.rds.amazonaws.com',
