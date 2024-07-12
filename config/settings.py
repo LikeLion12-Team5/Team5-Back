@@ -93,8 +93,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:5500",
     "http://127.0.0.1:5500",
-    "https://d30xmqpda0tu4k.cloudfront.net/",
 ]
+
 
 from datetime import timedelta
 SIMPLE_JWT = {
