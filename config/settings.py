@@ -146,10 +146,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'color-post',
-        'USER':'colorful_lion5',
-        'PASSWORD':'color0712!',
-        'HOST':'color-post.cl8sss2aeglb.ap-northeast-2.rds.amazonaws.com',
+        'NAME': 'lion',
+        'USER':'lion5',
+        'PASSWORD':'lion1234',
+        'HOST':'lion.cl8sss2aeglb.ap-northeast-2.rds.amazonaws.com',
         'PORT':'3306',
         'OPTION': {
             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"'
