@@ -92,9 +92,8 @@ class MostFrequentColorView(APIView):
     
 # 검색(전체), 검색(post_id), 검색(color) 게시, 수정, 삭제
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
-    ordering = '-id'
     permission_classes = [IsOwner|OnlyRead]
     filter_backends = [filters.SearchFilter]
     search_fields = ['color']
@@ -145,7 +144,7 @@ class MyPostAPIView(ListAPIView):
     search_fields = ['color']
 
     def get_queryset(self):
-        return Post.objects.filter(user=self.request.user)
+        return Post.objects.filter(user=self.request.user).order_by('-created_at')
 
 
 # 자신의 색깔별 게시글 수 검색
